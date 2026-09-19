@@ -3,378 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>七夕祝福</title>
+    <title>七夕快乐</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        
-        body {
-            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #2d1b4e 100%);
-            position: relative;
-        }
-        
-        #canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #2d1b4e 100%);
-        }
-        
-        .start-screen.hidden {
-            display: none;
-        }
-        
-        .start-btn {
-            background: linear-gradient(45deg, #ff6b9d, #ff8e53);
-            color: white;
-            border: none;
-            padding: 20px 60px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            letter-spacing: 3px;
-        }
-        
-        .start-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
-        }
-        
-        .end-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            background: rgba(10, 10, 26, 0.8);
-        }
-        
-        .end-screen.show {
-            display: flex;
-        }
-        
-        .restart-btn {
-            background: linear-gradient(45deg, #ff6b9d, #ff8e53);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-        
-        .restart-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.5);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Microsoft YaHei', sans-serif; }
+        body { background: url('https://img1.baidu.com/it/u=4271387001,3922181539&fm=253&fmt=auto&app=138&f=JPEG?w=729&h=1094') center/cover no-repeat; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: -1; }
+        #canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+        .start-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .start-screen.hidden { display: none; }
+        .card-box { width: 90%; height: 100px; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; }
+        .card-header-top { height: 33.33%; background: linear-gradient(135deg, #ffb8d1, #ffcae0); display: flex; align-items: center; padding: 0 10px; font-family: 'Pacifico', cursive; font-size: 11px; color: rgba(255,255,255,0.95); }
+        .card-body-bottom { height: 66.67%; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; }
+        .card-text { font-size: 12px; color: #666; margin-bottom: 6px; white-space: nowrap; }
+        .card-confirm { font-size: 14px; color: #ff6b9d; font-weight: bold; padding: 4px 20px; border: 1px solid #ff6b9d; border-radius: 15px; }
+        .card { position: absolute; width: 60px; height: 35px; border-radius: 6px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.2); cursor: pointer; user-select: none; display: flex; flex-direction: column; }
+        .card:hover { transform: scale(1.15); z-index: 1000; }
+        .card-header { height: 33%; display: flex; align-items: center; padding: 0 3px; font-family: 'Pacifico', cursive; font-size: 5px; color: rgba(255,255,255,0.95); }
+        .card-header::before { content: '♥'; margin-right: 1px; font-size: 4px; }
+        .card-body { height: 67%; display: flex; align-items: center; justify-content: center; padding: 2px; font-size: 4px; line-height: 1.2; text-align: center; font-weight: 500; }
+        .card-pink .card-header { background: linear-gradient(135deg, #ffb8d1, #ffcae0); }
+        .card-pink .card-body { background: linear-gradient(135deg, #ffd1dc, #ffe4ec); color: #d63384; }
+        .card-green .card-header { background: linear-gradient(135deg, #90ee90, #98fb98); }
+        .card-green .card-body { background: linear-gradient(135deg, #d4edda, #e8f5e9); color: #155724; }
+        .card-blue .card-header { background: linear-gradient(135deg, #87ceeb, #add8e6); }
+        .card-blue .card-body { background: linear-gradient(135deg, #cce5ff, #e3f2fd); color: #004085; }
+        .card-purple .card-header { background: linear-gradient(135deg, #d8bfd8, #e6e6fa); }
+        .card-purple .card-body { background: linear-gradient(135deg, #e8daef, #f3e5f5); color: #6a1b9a; }
+        .music-icon { position: fixed; top: 15px; right: 15px; width: 40px; height: 40px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 200; box-shadow: 0 2px 10px rgba(0,0,0,0.2); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .music-icon.visible { opacity: 1; pointer-events: auto; }
+        .music-icon.rotating { animation: rotate 2s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    
+    <div id="canvas"></div>
+    <div class="music-icon" id="musicIcon">♪</div>
     <div class="start-screen" id="startScreen">
-        <button class="start-btn" onclick="startSequence()">开始</button>
+        <div class="card-box" id="startBtn">
+            <div class="card-header-top">♥ love you</div>
+            <div class="card-body-bottom">
+                <div class="card-text">你有一份七夕礼物，确定要打开吗？</div>
+                <div class="card-confirm">确定</div>
+            </div>
+        </div>
     </div>
-    
-    <div class="end-screen" id="endScreen">
-        <button class="restart-btn" onclick="restart()">再来一次</button>
-    </div>
-    
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const startScreen = document.getElementById('startScreen');
-        const endScreen = document.getElementById('endScreen');
-        
-        // 独立的状态管理
-        const state = {
-            textParticles: [],      // 文案粒子
-            fireworks: [],            // 烟花粒子
-            countdown: null,          // 倒计时状态
-            isRunning: false
-        };
-        
-        // 初始化画布
-        function resize() {
-            const dpr = Math.min(window.devicePixelRatio, 2);
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            canvas.style.width = window.innerWidth + 'px';
-            canvas.style.height = window.innerHeight + 'px';
-            ctx.scale(dpr, dpr);
+        // 文件名解析：提取 A 和 B
+        // 文件名格式: A-B.xxx，A 是 - 前面的部分，B 是 - 后面的部分（不含扩展名）
+        // 动态获取当前文件名（从 URL 路径中提取）
+        const fileName = window.location.pathname.split('/').pop() || 'BRP-七夕快乐.html';
+        const fileNameParts = fileName.split('-');
+        const A = fileNameParts[0];  // "BRP"
+        const B = fileNameParts[1] ? fileNameParts[1].replace(/\.[^/.]+$/, '') : '';  // "七夕快乐"（去掉扩展名）
+        console.log('fileName:', fileName, 'A:', A, 'B:', B);
+
+        const canvas = document.getElementById('canvas'), startScreen = document.getElementById('startScreen'), startBtn = document.getElementById('startBtn'), musicIcon = document.getElementById('musicIcon');
+        let audio = new Audio('https://music.163.com/song/media/outer/url?id=3371322099.mp3');
+        audio.loop = true;
+        let isPlaying = false;
+        startBtn.addEventListener('click', () => { startAnimation(); startMusic(); });
+        musicIcon.addEventListener('click', toggleMusic);
+        window.addEventListener('beforeunload', () => { if (audio) { audio.pause(); audio.currentTime = 0; } });
+        function startMusic() {
+            musicIcon.classList.add('visible');
+            audio.play().then(() => { isPlaying = true; musicIcon.classList.add('rotating'); }).catch(() => {});
         }
-        resize();
-        window.addEventListener('resize', resize);
-        
-        // ========== 文案3D粒子系统 ==========
-        class Text3DParticle {
-            constructor(x, y, color, delay = 0) {
-                this.targetX = x;
-                this.targetY = y;
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.alpha = 0;
-                this.scale = 0;
-                this.delay = delay;
-                this.age = 0;
-                this.state = 'entering'; // entering, holding, exiting
-                
-                // 退场飘散参数
-                this.exitVx = (Math.random() - 0.5) * 10;
-                this.exitVy = (Math.random() - 0.5) * 10 - 3;
-                this.exitDecay = 0.08;
+        function toggleMusic() {
+            if (isPlaying) { audio.pause(); isPlaying = false; musicIcon.classList.remove('rotating'); }
+            else { audio.play().then(() => { isPlaying = true; musicIcon.classList.add('rotating'); }).catch(() => {}); }
+        }
+        // 使用 A 和 B 生成个性化消息
+        const shortMessages = [`♥${A}♥`,B,'一直在一起','永远爱你','想你','喜欢你','陪你到老','你是我的','命中注定','爱你哦','和你在一起','最爱你了','只想有你','不能没有你','爱你么么哒','想抱你','想亲你','好喜欢你','你真可爱','有你真好','想你了','kiss you','hug you','love you','期待我们的见面'];
+        const colorThemes = ['pink','green','blue','purple'], TOTAL_CARDS = 121;
+        let cards = [], animationRunning = false, startTime = 0;
+        function createCard(text,theme) {
+            const card = document.createElement('div'); card.className = `card card-${theme}`;
+            const header = document.createElement('div'); header.className = 'card-header'; header.textContent = 'love you';
+            const body = document.createElement('div'); body.className = 'card-body'; body.textContent = text;
+            card.appendChild(header); card.appendChild(body); card.style.opacity = '0'; canvas.appendChild(card); return card;
+        }
+        function getHeartPoints(count) {
+            const points = [], w = window.innerWidth, h = window.innerHeight, cx = w/2, cy = h/2, scale = Math.min(w,h) * 0.40;
+            for (let i = 0; i < count; i++) { const t = (i/count)*Math.PI*2, x = 16*Math.pow(Math.sin(t),3), y = -(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)); points.push({x:cx+x*scale/16,y:cy+y*scale/16}); }
+            return points;
+        }
+        function easeOutCubic(t) { return 1-Math.pow(1-t,3); }
+        function startAnimation() {
+            startTime = Date.now(); startScreen.classList.add('hidden'); animationRunning = true; cards = []; canvas.innerHTML = '';
+            const heartPoints = getHeartPoints(TOTAL_CARDS);
+            for (let i = 0; i < TOTAL_CARDS; i++) {
+                let text;
+                if (i === 0) text = `♥${A}♥`;
+                else if (i === 1) text = B;
+                else if (i === TOTAL_CARDS - 1) text = '期待我们的见面';
+                else text = shortMessages[Math.floor(Math.random()*shortMessages.length)];
+                const theme = colorThemes[i%colorThemes.length], card = createCard(text,theme);
+                const margin = 100, startX = window.innerWidth+margin+Math.random()*200, startY = window.innerHeight+margin+Math.random()*200;
+                cards.push({element:card,startX:startX,startY:startY,targetX:heartPoints[i].x,targetY:heartPoints[i].y,delay:i*536,phase:'flying'});
             }
-            
-            update() {
-                this.age++;
-                
-                if (this.state === 'entering') {
-                    // 入场缩放动画
-                    if (this.age > this.delay) {
-                        const progress = Math.min((this.age - this.delay) / 20, 1);
-                        this.scale = this.easeOutBack(progress);
-                        this.alpha = progress;
-                    }
-                } else if (this.state === 'exiting') {
-                    // 退场飘散
-                    this.x += this.exitVx;
-                    this.y += this.exitVy;
-                    this.alpha -= this.exitDecay;
-                    this.scale *= 0.95;
+            animateCards();
+        }
+        function animateCards() {
+            if (!animationRunning) return;
+            const now = Date.now(); let allInPosition = true;
+            cards.forEach(card => {
+                const elapsed = now-startTime; if (elapsed < card.delay) return;
+                const progress = Math.min((elapsed-card.delay)/2000,1), easeProgress = easeOutCubic(progress);
+                if (card.phase === 'flying') {
+                    const currentX = card.startX+(card.targetX-card.startX)*easeProgress, currentY = card.startY+(card.targetY-card.startY)*easeProgress;
+                    card.element.style.left = currentX+'px'; card.element.style.top = currentY+'px';
+                    const flyAngle = 25*(1-easeProgress);
+                    card.element.style.transform = `translate(-50%,-50%) scale(${0.3+easeProgress*0.7}) rotate(${flyAngle}deg)`;
+                    card.element.style.opacity = easeProgress;
+                    if (progress < 1) allInPosition = false;
+                    else { card.phase = 'settling'; card.settleStart = now; card.baseX = card.targetX; card.baseY = card.targetY; }
+                } else if (card.phase === 'settling') {
+                    const settleElapsed = now-card.settleStart, settleDuration = 1000;
+                    if (settleElapsed < settleDuration) {
+                        const t = settleElapsed/settleDuration, wobble = Math.sin(t*Math.PI*4)*(1-t)*3;
+                        const offsetX = wobble*Math.cos(45*Math.PI/180), offsetY = wobble*Math.sin(45*Math.PI/180);
+                        card.element.style.left = (card.baseX+offsetX)+'px'; card.element.style.top = (card.baseY+offsetY)+'px';
+                        card.element.style.transform = `translate(-50%,-50%) rotate(0deg)`; allInPosition = false;
+                    } else { card.phase = 'holding'; card.holdStart = now; card.element.style.left = card.baseX+'px'; card.element.style.top = card.baseY+'px'; }
                 }
-            }
-            
-            easeOutBack(t) {
-                const c1 = 1.70158;
-                const c3 = c1 + 1;
-                return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-            }
-            
-            draw() {
-                if (this.alpha <= 0) return;
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                const size = 1.5 * this.scale;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            startExit() {
-                this.state = 'exiting';
-            }
-        }
-        
-        // 获取文字像素
-        function getTextPixels(text, fontSize) {
-            const tempCanvas = document.createElement('canvas');
-            const tempCtx = tempCanvas.getContext('2d');
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            
-            tempCanvas.width = width;
-            tempCanvas.height = height;
-            
-            // 华文细黑
-            tempCtx.font = `bold ${fontSize}px "STHeiti", "华文细黑", "Heiti SC", sans-serif`;
-            tempCtx.fillStyle = 'white';
-            tempCtx.textAlign = 'center';
-            tempCtx.textBaseline = 'middle';
-            
-            const lines = text.split('\n');
-            const lineHeight = fontSize * 1.1;
-            const totalHeight = lines.length * lineHeight;
-            const startY = (height - totalHeight) / 2 + fontSize / 2;
-            
-            lines.forEach((line, i) => {
-                tempCtx.fillText(line, width / 2, startY + i * lineHeight);
             });
-            
-            const imageData = tempCtx.getImageData(0, 0, width, height);
-            const pixels = [];
-            const step = 2;
-            
-            for (let y = 0; y < height; y += step) {
-                for (let x = 0; x < width; x += step) {
-                    const idx = (y * width + x) * 4;
-                    if (imageData.data[idx + 3] > 128) {
-                        pixels.push({ x, y });
+            if (allInPosition && cards.every(c => c.phase === 'holding')) {
+                if (now-cards[0].holdStart > 5000) { scatterCards(); return; }
+            }
+            requestAnimationFrame(animateCards);
+        }
+        function scatterCards() {
+            const w = window.innerWidth, h = window.innerHeight;
+            const specialPositions = [{x: w*0.5, y: h*0.45}, {x: w*0.35, y: h*0.5}, {x: w*0.65, y: h*0.5}];
+            const avoidRadius = 100;
+            cards.forEach((card, index) => {
+                card.phase = 'scattered';
+                card.element.style.transition = 'all 1.2s cubic-bezier(0.25,0.46,0.45,0.94)';
+                let targetX, targetY;
+                if (index === 0) { targetX = specialPositions[0].x; targetY = specialPositions[0].y; }
+                else if (index === 1) { targetX = specialPositions[1].x; targetY = specialPositions[1].y; }
+                else if (index === TOTAL_CARDS - 1) { targetX = specialPositions[2].x; targetY = specialPositions[2].y; }
+                else {
+                    targetX = Math.random() * w;
+                    targetY = Math.random() * h;
+                    let tooClose = true, attempts = 0;
+                    while (tooClose && attempts < 50) {
+                        tooClose = false;
+                        for (let sp of specialPositions) {
+                            const dist = Math.sqrt(Math.pow(targetX-sp.x,2)+Math.pow(targetY-sp.y,2));
+                            if (dist < avoidRadius) { tooClose = true; break; }
+                        }
+                        if (tooClose) { targetX = Math.random()*w; targetY = Math.random()*h; }
+                        attempts++;
                     }
                 }
-            }
-            
-            return pixels;
-        }
-        
-        // 创建文案粒子
-        function createTextParticles(text, color, fontSize) {
-            const pixels = getTextPixels(text, fontSize);
-            const particles = [];
-            
-            pixels.forEach((p, i) => {
-                // 随机延迟，营造波浪入场效果
-                const delay = Math.random() * 30;
-                particles.push(new Text3DParticle(p.x, p.y, color, delay));
+                card.element.style.left = targetX+'px';
+                card.element.style.top = targetY+'px';
+                card.element.style.transform = `translate(-50%,-50%) rotate(${Math.random()*20-10}deg) scale(1.1)`;
             });
-            
-            return particles;
         }
-        
-        // 显示文案
-        async function showBlessing(text, color, fontSize, holdTime = 2000) {
-            // 退场旧文案
-            state.textParticles.forEach(p => p.startExit());
-            
-            // 等待退场完成
-            await new Promise(r => setTimeout(r, 400));
-            
-            // 创建新文案
-            state.textParticles = createTextParticles(text, color, fontSize);
-            
-            // 等待显示
-            await new Promise(r => setTimeout(r, holdTime));
-        }
-        
-        // ========== 烟花系统（完全独立） ==========
-        class FireworkParticle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 4 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.alpha = 1;
-                this.decay = 0.015;
-                this.gravity = 0.08;
-            }
-            
-            update() {
-                this.vx *= 0.985;
-                this.vy *= 0.985;
-                this.vy += this.gravity;
-                this.x += this.vx;
-                this.y += this.vy;
-                this.alpha -= this.decay;
-            }
-            
-            draw() {
-                if (this.alpha <= 0) return;
-                ctx.globalAlpha = this.alpha;
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x - this.vx * 1.5, this.y - this.vy * 1.5);
-                ctx.stroke();
-            }
-        }
-        
-        function createFirework(x, y) {
-            const colorPalette = [
-                ['#ff6b6b', '#ff8e8e', '#ffb3b3'],
-                ['#feca57', '#ffd93d', '#ffed4a'],
-                ['#48dbfb', '#74e0fc', '#9eeafc'],
-                ['#ff9ff3', '#ffb8f5', '#ffd1f7'],
-                ['#54a0ff', '#74b9ff', '#a3d1ff'],
-                ['#5f27cd', '#7c4dff', '#9b7dff'],
-                ['#ff0000', '#ff4d4d', '#ff8080'],
-                ['#00ff00', '#4dff4d', '#80ff80'],
-                ['#ffff00', '#ffff4d', '#ffff80'],
-                ['#ff00ff', '#ff4dff', '#ff80ff'],
-                ['#ffa500', '#ffb84d', '#ffcc80'],
-                ['#ffc0cb', '#ffd1d9', '#ffe2e8'],
-                ['#40e0d0', '#6fe8db', '#9ff0e6'],
-                ['#ffd700', '#ffe44d', '#ffed80'],
-                ['#ff69b4', '#ff8ec7', '#ffb3da']
-            ];
-            
-            const palette = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-            const extendedPalette = [...palette, ...palette, ...palette]; // 扩展为9种
-            
-            for (let i = 0; i < 90; i++) {
-                const color = extendedPalette[Math.floor(Math.random() * extendedPalette.length)];
-                state.fireworks.push(new FireworkParticle(x, y, color));
-            }
-        }
-        
-        // ========== 倒计时系统（完全独立） ==========
-        class CountdownParticle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.alpha = 1;
-                this.scale = 0;
-                this.targetScale = 1;
-            }
-            
-            update() {
-                this.scale += (this.targetScale - this.scale) * 0.1;
-            }
-            
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                const size = 2 * this.scale;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-        
-        function createCountdownParticles(text, color, fontSize) {
-            const pixels = getTextPixels(text, fontSize);
-            return pixels.map(p => new CountdownParticle(p.x, p.y, color));
-        }
-        
-        // ========== 主渲染循环 ==========
-        function render() {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            
-            // 清空画布
-            ctx.fillStyle = 'rgba(10, 10, 26, 0.2)';
-            ctx.fillRect(0, 0, width, height);
-            
-            // 渲染文案粒子
+    </script>
+</body>
+</html>
+渲染文案粒子
             for (let i = state.textParticles.length - 1; i >= 0; i--) {
                 const p = state.textParticles[i];
                 p.update();
